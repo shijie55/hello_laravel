@@ -11,5 +11,5 @@ let mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/assets/js/app.js', 'public/js')
-   .sass('resources/assets/sass/app.scss', 'public/css');
+mix.js('resources/assets/js/app.js', 'public/js')//js生成
+   .sass('resources/assets/sass/app.scss', 'public/css');//将scss文件编译为css文件，第二个参数是指定存放路径

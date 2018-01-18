@@ -18,3 +18,5 @@ Route::get('/', function () {
 Route::get('test1', function () {
         return view('test1');
 });
+
+Route::get('signUp', 'UsersController@create')->name('signUp');
