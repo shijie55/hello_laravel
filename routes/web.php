@@ -20,3 +20,5 @@ Route::get('test1', function () {
 });
 
 Route::get('signUp', 'UsersController@create')->name('signUp');
+
+Route::resource('users', 'UsersController');
