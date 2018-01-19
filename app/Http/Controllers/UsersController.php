@@ -34,7 +34,8 @@ class UsersController extends Controller
     //首页面， Route::get("users", "UsersController@index")->name("users.index")
     public function index()
     {
-        return "index";
+      $users = User::paginate(4);
+      return view('users.index', compact('users'));
     }
     //个人资料页面, Route::get("users/{user}", "UsersController@show")->name("users.show")
     public function show(User $user)
@@ -75,8 +76,13 @@ class UsersController extends Controller
     //编辑页面， Route::get("users/{user}/edit", "UsersController@edit")->name("users.edit")
     public function edit(User $user)
     {
-      $this->authorize('update', $user);
-      return view('users.edit', compact('user'));
+      if(Auth::user()->can('update', $user)){//等同于$this->authorize('update', $user);只是不回报错
+        return view('users.edit', compact('user'));
+      } else {
+        session()->flash('danger', '你权限不足');
+        Auth::logout();
+        return redirect()->route("login");
+      }
     }
 
     //更新用户, Route::patch("users/{user}", "UsersController@update")->name("users.update")
