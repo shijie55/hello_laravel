@@ -10,24 +10,24 @@ use App\Models\User;
 **/
 class UsersController extends Controller
 {
-    //创建用户的界面，Route::get("users/create", "UsersController@create")
+    //创建用户的界面，Route::get("users/create", "UsersController@create")->name("user.create")
     public function create()
     {
       return view('users.create');
     }
 
-    //首页面， Route::get("users", "UsersController@index")
+    //首页面， Route::get("users", "UsersController@index")->name("user.index")
     public function index()
     {
         return "index";
     }
-    //个人资料页面, Route::get("users/{user}", "UsersController@show")
+    //个人资料页面, Route::get("users/{user}", "UsersController@show")->name("user.show")
     public function show(User $user)
     {
       $user->gravatar();
       return view("users.show", compact("user"));
     }
-    //创建用户, Route::post("users", "UsersController@store")
+    //创建用户, Route::post("users", "UsersController@store")->name("user.store")
     public function store(Request $request)
     {
       $this->validate($request, [
@@ -46,21 +46,29 @@ class UsersController extends Controller
             "email"=>"邮箱",
             "password"=>"密码"
       ]);
+
+      $user = User::create([
+                "name"=>$request->name,
+                "email"=>$request->email,
+                "password"=>bcrypt($request->password)
+              ]);
+      session()->flash('success', '欢迎，您将在这里开启一段新的旅程~');
+      return redirect()->route('users.show', [$user]);
     }
 
-    //编辑页面， Route::get("users/{user}/edit", "UsersController@edit")
+    //编辑页面， Route::get("users/{user}/edit", "UsersController@edit")->name("user.edit")
     public function edit()
     {
       return "edit";
     }
 
-    //更新用户, Route::patch("users/{user}", "UsersController@update")
+    //更新用户, Route::patch("users/{user}", "UsersController@update")->name("user.update")
     public function update()
     {
       return "update";
     }
 
-    //删除用户, Route::delete("users/{user}, "UsersController@destory")
+    //删除用户, Route::delete("users/{user}, "UsersController@destory")->name("user.detory")
     public function destory()
     {
       return "destory";
