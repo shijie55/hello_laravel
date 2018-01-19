@@ -15,7 +15,7 @@ class SessionsController extends Controller
 
     public function store(Request $request)
     {
-      //表单验证返回值史数组
+      //表单验证返回值是数组
       $credentials = $this->validate($request, [
                           "email"=>"required|email",
                           "password"=>"required|min:6"

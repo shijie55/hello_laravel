@@ -11,24 +11,33 @@ use App\Models\User;
 **/
 class UsersController extends Controller
 {
-    //创建用户的界面，Route::get("users/create", "UsersController@create")->name("user.create")
+
+    //中间件，除了create store未登录可以进入，其他页面都需要登录
+    public function __construct()
+    {
+        $this->middleware('auth', [
+            'except' => ['create', 'store']
+        ]);
+    }
+
+    //创建用户的界面，Route::get("users/create", "UsersController@create")->name("users.create")
     public function create()
     {
       return view('users.create');
     }
 
-    //首页面， Route::get("users", "UsersController@index")->name("user.index")
+    //首页面， Route::get("users", "UsersController@index")->name("users.index")
     public function index()
     {
         return "index";
     }
-    //个人资料页面, Route::get("users/{user}", "UsersController@show")->name("user.show")
+    //个人资料页面, Route::get("users/{user}", "UsersController@show")->name("users.show")
     public function show(User $user)
     {
       $user->gravatar();
       return view("users.show", compact("user"));
     }
-    //创建用户, Route::post("users", "UsersController@store")->name("user.store")
+    //创建用户, Route::post("users", "UsersController@store")->name("users.store")
     public function store(Request $request)
     {
       $this->validate($request, [
@@ -58,19 +67,43 @@ class UsersController extends Controller
       return redirect()->route('users.show', [$user]);
     }
 
-    //编辑页面， Route::get("users/{user}/edit", "UsersController@edit")->name("user.edit")
-    public function edit()
+    //编辑页面， Route::get("users/{user}/edit", "UsersController@edit")->name("users.edit")
+    public function edit(User $user)
     {
-      return "edit";
+      return view('users.edit', compact('user'));
     }
 
-    //更新用户, Route::patch("users/{user}", "UsersController@update")->name("user.update")
-    public function update()
+    //更新用户, Route::patch("users/{user}", "UsersController@update")->name("users.update")
+    public function update(User $user, Request $request)
     {
-      return "update";
+      //sometimes表示如果字段没有则不验证
+      $this->validate($request, [
+        "name"=>"required|max:255",
+        "password"=>"nullable|confirmed|max:255"
+      ],["required"=>"必须的",
+         "max"=>"最大长度",
+         "confirmed"=>"不一致"
+       ],[
+         "name"=>":attribute 用户名",
+         "password"=>":attribute 密码"
+       ]);
+
+       if (!empty($request->password)) {
+         $bool = $user->update(["name"=>$request->name, "password"=>bcrypt($request->password)]);
+       } else {
+         $bool = $user->update(["name"=>$request->name]);
+       }
+
+       if ($bool) {
+         session()->flash("success", "更新成功");
+          return redirect()->route("users.show",[$user]);
+       }else {
+          session()->flash("danger", "出错了，更新失败");
+          return redirect()->back();
+       }
     }
 
-    //删除用户, Route::delete("users/{user}, "UsersController@destory")->name("user.detory")
+    //删除用户, Route::delete("users/{user}, "UsersController@destory")->name("users.detory")
     public function destory()
     {
       return "destory";
