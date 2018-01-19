@@ -10,6 +10,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+// Route::get('/', 'StaticPagesController@home')->name('home');
+// Route::get('/help', 'StaticPagesController@help')->name('help');
+// Route::get('/about', 'StaticPagesController@about')->name('about');
 
 Route::get('/', function () {
     return view('test1');
@@ -22,3 +25,8 @@ Route::get('test1', function () {
 Route::get('signUp', 'UsersController@create')->name('signUp');
 
 Route::resource('users', 'UsersController');
+
+//login
+Route::get('login', 'SessionsController@create')->name('login');
+Route::post('login', 'SessionsController@store')->name('login');
+Route::delete('logout', 'SessionsController@destroy')->name('logout');
