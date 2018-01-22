@@ -34,20 +34,25 @@ class UsersController extends Controller
     //首页面， Route::get("users", "UsersController@index")->name("users.index")
     public function index()
     {
-      $users = User::paginate(4);
+      $users = User::paginate(10);
       return view('users.index', compact('users'));
     }
     //个人资料页面, Route::get("users/{user}", "UsersController@show")->name("users.show")
     public function show(User $user)
     {
       // $user->gravatar();
-      return view("users.show", compact("user"));
+      // if(Auth::user()->can("update", $user)){
+        return view("users.show", compact("user"));
+      // } else {
+      //   session()->flash("danger", "您不能修改别人的信息");
+      //   return redirect()->back();
+      // }
     }
     //创建用户, Route::post("users", "UsersController@store")->name("users.store")
     public function store(Request $request)
     {
       $this->validate($request, [
-            "name"=>"required|max:10|min:3",
+            "name"=>"required|max:255|min:3",
             "email"=>"required|email|unique:users|max:255",
             "password"=>"required|min:6|confirmed"
       ],[
@@ -115,9 +120,12 @@ class UsersController extends Controller
        }
     }
 
-    //删除用户, Route::delete("users/{user}, "UsersController@destory")->name("users.detory")
-    public function destory()
+    //删除用户, Route::delete("users/{user}, "UsersController@destroy")->name("users.detory")
+    public function destroy(User $user)
     {
-      return "destory";
+        $this->authorize('delete', $user);
+        $user->delete();
+        session()->flash('success', '成功删除用户！');
+        return back();
     }
 }

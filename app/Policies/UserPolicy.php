@@ -18,4 +18,9 @@ class UserPolicy
      {
          return $currentUser->id === $user->id;
      }
+
+     public function delete(User $currentUser, User $user)
+     {
+        return $currentUser->is_admin && $currentUser->id !== $user->id;//用户为管理员，且删除的不是自己
+     }
 }

@@ -156,3 +156,9 @@ input {
     border-bottom: 1px solid $gray-lighter;
   }
 }
+/* Users index */
+.delete-btn {
+  float: right;
+  position: relative;
+  right: 0;
+}
