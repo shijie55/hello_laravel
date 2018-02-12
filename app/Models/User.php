@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -42,5 +43,10 @@ class User extends Authenticatable
         //$this->attributes["email"] 得到当前实例化该类时的数据库里的值
         $hash = md5(strtolower(trim($this->attributes['email'])));//trim去空格， strtolower变小写， md5进行转码
         return "http://www.gravatar.com/avatar/$hash?s=$size";//根据md5转码得到图片链接，size设置图片大小
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPassword($token));
     }
 }
