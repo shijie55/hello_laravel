@@ -112,7 +112,7 @@ class UsersController extends Controller
        }
 
        if ($bool) {
-         session()->flash("success", "更新成功");
+          session()->flash("success", "更新成功");
           return redirect()->route("users.show",[$user]);
        }else {
           session()->flash("danger", "出错了，更新失败");
