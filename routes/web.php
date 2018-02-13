@@ -14,12 +14,22 @@
 // Route::get('/help', 'StaticPagesController@help')->name('help');
 // Route::get('/about', 'StaticPagesController@about')->name('about');
 
+use Illuminate\Support\Facades\Auth;
+
 Route::get('/', function () {
-    return view('test1');
+    $feed_items = [];
+    if (Auth::check()) {
+        $feed_items = Auth::user()->feed()->paginate(30);
+    }
+    return view('test1', compact('feed_items'));
 });
 
 Route::get('test1', function () {
-        return view('test1');
+    $feed_items = [];
+    if (Auth::check()) {
+        $feed_items = Auth::user()->feed()->paginate(30);
+    }
+        return view('test1', compact('feed_items'));
 });
 
 Route::get('signUp', 'UsersController@create')->name('signUp');
@@ -38,3 +48,5 @@ Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm'
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
+
+Route::resource('statuses', 'StatusesController', ['only' => ['store', 'destroy']]);

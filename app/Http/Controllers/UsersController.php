@@ -44,7 +44,10 @@ class UsersController extends Controller
     {
         // $user->gravatar();
         // if(Auth::user()->can("update", $user)){
-        return view("users.show", compact("user"));
+        $statuses = $user->statuses()
+            ->orderBy('created_at', 'desc')
+            ->paginate(30);
+        return view('users.show', compact('user', 'statuses'));
         // } else {
         //   session()->flash("danger", "您不能修改别人的信息");
         //   return redirect()->back();
