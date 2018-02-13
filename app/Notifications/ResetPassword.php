@@ -16,11 +16,12 @@ class ResetPassword extends Notification
         $this->token = $token;
     }
 
+    //通知使用什么通道
     public function via($notifiable)
     {
         return ['mail'];
     }
-
+    //这个通知类，将在Controller/Auth/ForgotPasswordController类的use的trait里发邮件时用到
     public function toMail($notifiable)
     {
         return (new MailMessage)
